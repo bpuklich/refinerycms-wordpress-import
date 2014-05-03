@@ -21,7 +21,7 @@ module Refinery
         end
       end
 
-      def pages(only_published=false)
+      def pages(only_published=false, page_start_id=0)
         pages = doc.xpath("//item[wp:post_type = 'page']").collect do |page|
           Page.new(page)
         end

@@ -12,6 +12,8 @@ def setup_environment
   #ActionMailer::Base.perform_deliveries = true
   #ActionMailer::Base.default_url_options[:host] = "test.com"
 
+  require "custom_matchers.rb"
+
   Rails.backtrace_cleaner.remove_silencers!
 
   # Run any available migration
@@ -56,7 +58,7 @@ def each_run
     require support_file
   end
 
-  # It isn't really a engine, per say.
+  # It isn't really a engine, per se.
   puts Rails.root.join("../support/**/*.rb")
   Dir[Rails.root.join("../support/**/*.rb")].each {|f| require f}
 

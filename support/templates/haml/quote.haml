@@ -1,0 +1,5 @@
+%blockquote
+  %p.quotation= @content
+  -if @attributes[:author]
+    %p.citation
+      %span.author= @attributes[:author]
