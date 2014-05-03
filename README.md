@@ -64,7 +64,7 @@ __Task 3__ combines the two previous tasks.
 
 ### 2. Wordpress page/Refinery page tasks
 
-If you want to import WordPress pages three more rake tasks manage the import into RefineryCMS Pages.
+Three rake tasks manage the import into RefineryCMS Pages.
 
     1. rake wordpress:reset_pages[offset_id]
     2. rake wordpress:import_pages[file_name, offset_id, parent] _ONLY_PUBLISHED_ _ALLOW_DUPLICATES_
@@ -74,7 +74,7 @@ __Parameters__
 
 _file_name_: (no default) the file name of the Wordpress XML dump file
 
-_offset_id_: (default=0) An offset to add to the Wordpress page ids to ensure that there is no conflict with existing Refinery page.
+_offset_id_: (default=0) An offset to add to the Wordpress page ids to ensure that there is no conflict with existing Refinery page-ids.
 If your highest Refinery page id is 55, you might set an offset_id of 100. (or 56)
 
 _parent_: (no default) By default pages without a parent-id will be set to be top-level pages. To attach these pages as children of a specific page use the page slug.
@@ -98,7 +98,7 @@ To skip unpublished pages add the ONLY_PUBLISHED parameter to this task.
 
 To allow duplicate page titles add the ALLOW_DUPLICATES parameter to this task.
 
-To clean and import in a single step use the third task.
+__Task 3__ Cleans and import pages in a single step.
 
 __Example__: to import the Wordpress pages attach the imported Wordpress pages as the children of the home page. All the pages will have 100 added to their Wordpress page_ids.
 
@@ -157,11 +157,11 @@ Ugly, but it works. This is the case for all rake tasks.
 <a name="conversion"/>
 During page and post conversion some shortcodes and other special features are recognized and changed.
 
-__paragraphs__
+__Paragraphs__
 
 Wordpress doesn't export &lt;p&gt; tags. Paragraphs are separated by a blank line. The conversion process looks for these and wraps the text in  &lt;p&gt;  tags.
 
-__base64 encoded images__
+__Base64 encoded images__
 
 Some content has been noted which includes base64 encoded images. These appear as a single line of 500K or more characters which the rest of the content processing seemed to struggle with. These images are processed and saved as files in the public folder, and an appropriate url is inserted into the text.
 
@@ -176,8 +176,8 @@ _caption_
         Here is an image
     [/caption]
 
-    <figure>
-      <img class="size-medium wp-image-304" title="Image Title" src="image.jpg" alt="There is an image here" src="http:/refineryeg.com/dragonflystuffimage.jpg" />
+    <figure class="alignright">
+      <img class="size-medium wp-image-304" title="Image Title" alt="There is an image here" src="http:/refineryeg.com/dragonflyencodingimage.jpg" />
       <figcaption>Here is an image</figcaption>
     </figure>
 
