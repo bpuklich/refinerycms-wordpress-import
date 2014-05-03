@@ -2,8 +2,9 @@
 
 This project imports WordPress XML dumps into refinerycms-blog.
 
-The original repository is [https://github.com/mremolt/refinerycms-wordpress-import]
-The shortcode processing came from [https://github.com/zyphlar/wordpress-import]
+The original repository is [mremolt/refinerycms-wordpress-import](https://github.com/mremolt/refinerycms-wordpress-import)
+
+The shortcode processing came from [zyphlar/wordpress-import](https://github.com/)
 
 Keep in mind that links to other pages of your blog are just copied, as WordPress exports them as anchors.
 If your site (blog) structure uses new urls, the links WILL break! For example, if you used
@@ -40,10 +41,10 @@ Importing the XML dump is done via rake tasks in three stages, any of which are 
     2. rake wordpress:import_blog[file_name] _ONLY_PUBLISHED_ _ALLOW_DUPLICATES_
     3. rake wordpress:reset_and_import_blog[file_name]
 
-The first task deletes posts from Refinery blog tables along with their associated records (taggings, tags, blog_comments, blog_categories, blog_posts, blog_categories_blog_posts).
+__Task 1__ deletes posts from Refinery blog tables along with their associated records (taggings, tags, blog_comments, blog_categories, blog_posts, blog_categories_blog_posts).
 This task is useful if you need to rerun the import process.
 
-The second task parses the XML dump and imports blog posts, authors, comments, categories and tags into refinery tables. For more information about the content conversion process see [#conversion](Page and post conversion) below.
+__Task 2__ parses the XML dump and imports blog posts, authors, comments, categories and tags into refinery tables. For more information about the content conversion process see [Page and post conversion](#conversion) below.
 
 The *file_name* parameter is the path to the dump file.
 
@@ -55,9 +56,10 @@ To allow posts with duplicate titles set the ENV variable ALLOW_DUPLICATES.
 (Refinery doesn't allow duplicate titles, so second and subsequent posts will have a post-id attached to their regular title)
 
 __Example__ to skip all unpublished posts
+
     rake wordpress:import_blog[file_name] ONLY_PUBLISHED
 
-The third task combines the two previous tasks.
+__Task 3__ combines the two previous tasks.
 
 
 ### 2. Wordpress page/Refinery page tasks
@@ -79,17 +81,18 @@ _parent_: (no default) By default pages without a parent-id will be set to be to
 
 *ONLY_PUBLISHED* and *ALLOW_DUPLICATES* are optional environment variables you can use to control the import.
 
-To avoid importing draft pages, set the ENV variable ONLY_PUBLISHED.
+To avoid importing draft pages set the ENV variable ONLY_PUBLISHED.
 
 To allow posts with duplicate titles set the ENV variable ALLOW_DUPLICATES.
 
-(Refinery doesn't allow duplicate titles, so second and subsequent posts will have a post-id attached to their regular title)
+(Refinery doesn't allow duplicate titles so second and subsequent posts will have a post-id attached to their regular title)
 
 __Tasks__
-The first task deletes pages from the Refinery CMS, enabling a clean import.
+
+__Task 1__ deletes pages from the Refinery CMS, enabling a clean import.
 If you have Refinery pages you wish to keep use the _offset_id_ parameter to specify a lower_limit on page_ids to be deleted.
 
-The second task imports WordPress pages into Refinery. If an _offset_id_ has been given all pages will have the offset value added to their Wordpress page-id. The page parent-child structure is preserved. For more information about the content conversion process see [#conversion](Page and post conversion) below.
+__Task 2__ imports WordPress pages into Refinery. If an _offset_id_ has been given all pages will have the offset value added to their Wordpress page-id. The page parent-child structure is preserved. For more information about the content conversion process see [Page and post conversion](#conversion) below.
 
 To skip unpublished pages add the ONLY_PUBLISHED parameter to this task.
 
@@ -105,6 +108,7 @@ __Example__: import published pages with their original page-ids unchanged.
 
     rake wordpress:import_pages[file_name] ONLY_PUBLISHED
 
+__Task 3__ combines Tasks 1 and 2 into a single step.
 
 ### 3. Wordpress media/Refinery Image and Resource tasks
 
@@ -113,9 +117,6 @@ For a working media import the site with the media URLs must still be online. Th
 The Wordpress XML dump contains absolute links to media files linked inside posts, like:
 
     www.mysite.com/wordpress/wp-content/uploads/2011/05/cv.txt
-
-The dump does NOT contain the files itself. To import them, this gem downloads the files
-from the given URL and imports them to refinery.
 
 After the files have been imported, the gem replaces the old links in pages and blog posts with the
 newly generated links to the Refinery site. It parses all existing records searching for the old URLs. For this to work
@@ -158,15 +159,15 @@ During page and post conversion some shortcodes and other special features are r
 
 __paragraphs__
 
-Wordpress doesn't export &lt;p&gt; tags. Paragraphs are separated by a blank line. The conversion process looks for these and wraps the text in p tags.
+Wordpress doesn't export &lt;p&gt; tags. Paragraphs are separated by a blank line. The conversion process looks for these and wraps the text in  &lt;p&gt;  tags.
 
 __base64 encoded images__
 
-    Some content has been noted which includes base64 encoded images. These appear as a single line of 500K or more characters which the rest of the content processing seemed to struggle with. These images are processed and saved as files in the public folder, and an appropriate url is inserted into the text.
+Some content has been noted which includes base64 encoded images. These appear as a single line of 500K or more characters which the rest of the content processing seemed to struggle with. These images are processed and saved as files in the public folder, and an appropriate url is inserted into the text.
 
 __Shortcodes__
 
-Shortcodes are processed using the Shortcode gem and template files located in support/templates/haml. You may wish to add to these templates for frequently occurring shortcodes in your Wordpress site.
+Shortcodes are processed using the Shortcode gem and template files located in `support/templates/haml`. You may wish to add to these templates for frequently occurring shortcodes in your Wordpress site.
 
 _caption_
 
@@ -220,7 +221,7 @@ _youtube_
 
 ###Adding and modifying shortcode conversions
 
-Shortcode templates are processed by the [https://github.com/kernow/shortcode](Shortcode gem).
+Shortcode templates are processed by the Shortcode gem[](https://github.com/kernow/shortcode).
 The gem is initialized in `lib/wordpress/page.rb` and the templates are in the directory `support/templates/haml`.
 Modify a template by editing the template file.
 To add a template you need to add its name to the list of templates in the initialization code and supply a suitable template file.
