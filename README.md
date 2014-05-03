@@ -3,7 +3,7 @@
 This project imports WordPress XML dumps into refinerycms-blog.
 
 The original repository is [https://github.com/mremolt/refinerycms-wordpress-import]
-THe shortcode processing came from [https://github.com/zyphlar/wordpress-import]
+The shortcode processing came from [https://github.com/zyphlar/wordpress-import]
 
 Keep in mind that links to other pages of your blog are just copied, as WordPress exports them as anchors.
 If your site (blog) structure uses new urls, the links WILL break! For example, if you used
@@ -32,9 +32,9 @@ and run
 
 Use the Wordpress Export tool to export pages, posts, media, comments, tags and categories from your Wordpress site  to an XML file.
 
-Importing the XML dump is done via rake tasks in three stages any of which are optional.
+Importing the XML dump is done via rake tasks in three stages, any of which are optional.
 
-### Wordpress post/Refinery blog tasks
+### 1. Wordpress post/Refinery blog tasks
 
     1. rake wordpress:reset_blog
     2. rake wordpress:import_blog[file_name] _ONLY_PUBLISHED_ _ALLOW_DUPLICATES_
@@ -60,7 +60,7 @@ __Example__ to skip all unpublished posts
 The third task combines the two previous tasks.
 
 
-### Wordpress page/Refinery page tasks
+### 2. Wordpress page/Refinery page tasks
 
 If you want to import WordPress pages three more rake tasks manage the import into RefineryCMS Pages.
 
@@ -68,33 +68,47 @@ If you want to import WordPress pages three more rake tasks manage the import in
     2. rake wordpress:import_pages[file_name, offset_id, parent] _ONLY_PUBLISHED_ _ALLOW_DUPLICATES_
     3. rake wordpress:reset_and_import_pages[file_name, offset_id, parent] _ONLY_PUBLISHED_ _ALLOW_DUPLICATES_
 
-Parameters
+__Parameters__
+
 _file_name_: (no default) the file name of the Wordpress XML dump file
+
 _offset_id_: (default=0) An offset to add to the Wordpress page ids to ensure that there is no conflict with existing Refinery page.
 If your highest Refinery page id is 55, you might set an offset_id of 100. (or 56)
+
 _parent_: (no default) By default pages without a parent-id will be set to be top-level pages. To attach these pages as children of a specific page use the page slug.
 
-The first task deletes pages from the Refinery CMS, enabling a clean import. Existing pages could break the import because of duplicate IDs.
+*ONLY_PUBLISHED* and *ALLOW_DUPLICATES* are optional environment variables you can use to control the import.
+
+To avoid importing draft pages, set the ENV variable ONLY_PUBLISHED.
+
+To allow posts with duplicate titles set the ENV variable ALLOW_DUPLICATES.
+
+(Refinery doesn't allow duplicate titles, so second and subsequent posts will have a post-id attached to their regular title)
+
+__Tasks__
+The first task deletes pages from the Refinery CMS, enabling a clean import.
 If you have Refinery pages you wish to keep use the _offset_id_ parameter to specify a lower_limit on page_ids to be deleted.
 
 The second task imports WordPress pages into Refinery. If an _offset_id_ has been given all pages will have the offset value added to their Wordpress page-id. The page parent-child structure is preserved. For more information about the content conversion process see [#conversion](Page and post conversion) below.
 
 To skip unpublished pages add the ONLY_PUBLISHED parameter to this task.
+
 To allow duplicate page titles add the ALLOW_DUPLICATES parameter to this task.
 
 To clean and import in a single step use the third task.
 
-Example: to import the Wordpress pages attach the imported Wordpress pages as the children of the home page. All the pages will have 100 added to their Wordpress page_ids.
+__Example__: to import the Wordpress pages attach the imported Wordpress pages as the children of the home page. All the pages will have 100 added to their Wordpress page_ids.
 
     rake wordpress:import_pages[file_name, 100, 'home']
 
-Example: import published pages with their original page-ids unchanged.
+__Example__: import published pages with their original page-ids unchanged.
 
     rake wordpress:import_pages[file_name] ONLY_PUBLISHED
 
 
-### Wordpress media/Refinery Image and Resource tasks
-For a working media import the old site with the media URLs must still be online. The gem downloads the files from the old site and imports them into Refinery. THis step must happen after the pages and posts have been imported so that new file urls can be added to the content.
+### 3. Wordpress media/Refinery Image and Resource tasks
+
+For a working media import the site with the media URLs must still be online. The gem downloads the files from the old site and imports them into Refinery. THis step must happen after the pages and posts have been imported so that new file urls can be added to the content.
 
 The Wordpress XML dump contains absolute links to media files linked inside posts, like:
 
@@ -107,7 +121,7 @@ After the files have been imported, the gem replaces the old links in pages and 
 newly generated links to the Refinery site. It parses all existing records searching for the old URLs. For this to work
 you must import pages and posts FIRST to get the URLs replaced.
 
-Now to the rake tasks for media import:
+__Tasks__
 
     1. rake wordpress:reset_media
     2. rake wordpress:import_and_replace_media[file_name]
@@ -118,7 +132,7 @@ The first task deletes records from the Refinery media tables (Refinery::Images,
 The second task imports the Wordpress media into Refinery. This task downloads files from the old site so may take some time.
 After the import it parses all pages and blog posts, replacing the old URLs with the current refinery ones.
 
-The third task allows you to clean and import in one task.
+The third task allows you to clean and import in one command.
 
 
 ### Importing everything
@@ -138,13 +152,17 @@ special meaning there. So the syntax is:
 
 Ugly, but it works. This is the case for all rake tasks.
 
-#### Page and post conversion
+## Page and post conversion
 <a name="conversion"/>
 During page and post conversion some shortcodes and other special features are recognized and changed.
 
+__paragraphs__
+
+Wordpress doesn't export &lt;p&gt; tags. Paragraphs are separated by a blank line. The conversion process looks for these and wraps the text in p tags.
+
 __base64 encoded images__
 
-    Some content has been notes which includes base64 encoded images. These appear as a single line of 500K or more characters which the rest of the content processing seemed to struggle with. These images are processed and saved as files in the public folder, and an appropriate url is inserted into the text.
+    Some content has been noted which includes base64 encoded images. These appear as a single line of 500K or more characters which the rest of the content processing seemed to struggle with. These images are processed and saved as files in the public folder, and an appropriate url is inserted into the text.
 
 __Shortcodes__
 
@@ -200,11 +218,11 @@ _youtube_
       </iframe>
     </p>
 
-__Adding and modifying shortcode conversions__
+###Adding and modifying shortcode conversions
 
 Shortcode templates are processed by the [https://github.com/kernow/shortcode](Shortcode gem).
 The gem is initialized in `lib/wordpress/page.rb` and the templates are in the directory `support/templates/haml`.
-Modifying a template done by editing the template file.
+Modify a template by editing the template file.
 To add a template you need to add its name to the list of templates in the initialization code and supply a suitable template file.
 Follow the examples already there and find further documentation with the Shortcode gem.
 
