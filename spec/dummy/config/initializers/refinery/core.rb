@@ -1,3 +1,4 @@
+# encoding: utf-8
 Refinery::Core.configure do |config|
   # When true will rescue all not found errors and display a friendly error page
   config.rescue_not_found = Rails.env.production?
@@ -32,7 +33,7 @@ Refinery::Core.configure do |config|
 
   # Should set this if concerned about DOS attacks. See
   # http://markevans.github.com/dragonfly/file.Configuration.html#Configuration
-  # config.dragonfly_secret = "9ab8e5ca0fc982b98ed2b5960fcb59b958f87bc46a015ac9"
+  # config.dragonfly_secret = "b0aa6714b9125df54c875cbf3902bf7637c29432fdafdc32"
 
   # Show/hide IE6 upgrade message in the backend
   # config.ie6_upgrade_message_enabled = true

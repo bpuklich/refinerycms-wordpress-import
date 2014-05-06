@@ -1,36 +1,12 @@
-require 'spec_helper'
-
-describe Refinery::WordPress::Page, :type => :model do
-
-  let(:dump) { test_dump }
-  let(:page) { dump.pages.last }
-
-  it 'creates a page from the XML dump file' do
-    expect( page.title).to eq('About me')
-    expect( page.content).to    include('Lorem ipsum dolor sit')
-    expect( page.creator).to    eq('admin')
-    expect( page.post_date).to  eq(DateTime.new(2011, 5, 21, 12, 25, 42))
-    expect( page.post_id).to    eq(10)
-    expect( page.parent_id).to  eq(8)
-
-    expect( page).to eq(dump.pages.last)
-    expect( page).not_to eq(dump.pages.first)
-  end
+shared_examples 'a wordpress post' do
 
   describe "#to_refinery" do
     include ::ActionView::Helpers::TagHelper
     include ::ActionView::Helpers::TextHelper
 
-    # "About me" has a parent page with id 8 in the XML  dump,
-    # would otherwise fails creation
-    before do
-      Refinery::Page.create! :id => 8, :title => 'About'
-      @count = Refinery::Page.count
-      @ref_page = page.to_refinery
-    end
 
-    it "creates a new Refinery Page" do
-      expect(Refinery::Page.count).to eq @count + 1
+    it "creates a new Refinery record" do
+      expect(Refinery::described_class.count).to eq @count + 1
     end
 
     it "copies the attributes from Refinery::WordPress::Page" do

@@ -1,0 +1,17 @@
+-# [caption id="attachment_304" align="alignright" width="300"]
+-#   <a href="http://www.caststone.com.au/blog/wp-content/uploads/2011/10/be-careful-and-choose-a-great-fencing-contractor.jpg">
+-#     <img class="size-medium wp-image-304"
+-#      title="Be Careful and Choose A Great Fencing Contractor"
+-#      src="http://www.caststone.com.au/blog/wp-content/uploads/2011/10/be-careful-and-choose-a-great-fencing-contractor-300x198.jpg"
+-#      alt="Be Careful and Choose A Great Fencing Contractor"
+-#      width="300" height="198" />
+-#   </a>
+-#   Be Careful and Choose A Great Fencing Contractor
+-# [/caption]
+
+- figure_hash = {:class => @attributes[:align], :id => @attributes[:id]}
+- content_image = Nokogiri::HTML(@content).css("img")
+- content_image.xpath('//@width | //@height | //@style').remove
+- content_caption = Nokogiri::HTML(@content).text + " #{@attributes[:caption]}"
+- @content = "#{content_image.to_html} <figcaption>#{content_caption}</figcaption>" unless content_image.blank?
+%figure{figure_hash}= @content

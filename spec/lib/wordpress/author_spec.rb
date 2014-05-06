@@ -3,26 +3,26 @@ require 'spec_helper'
 describe Refinery::WordPress::Author, :type => :model do
   let(:author) { test_dump.authors.first }
 
-  specify { author.login.should == 'admin' }
-  specify { author.email.should == 'admin@example.com' }
+  # specify { author.login.to == 'admin' }
+  # specify { author.email.to == 'admin@example.com' }
 
   describe "#to_refinery" do
     before do
       @user = author.to_refinery
     end
 
-    it "should create a User object" do
-      Refinery::User.should have(1).record
-      @user.should be_a(Refinery::User)
+    it "creates a User object" do
+      expect(Refinery::User.count).to eq(1)
+      expect(@user).to be_a(Refinery::User)
     end
 
-    it "the @user should be persisted" do
-      @user.should be_persisted
+    it "persists the user" do
+      expect(@user).to be_persisted
     end
 
-    it "should have copied the attributes from Refinery::WordPress::Author" do
-      author.login.should == @user.username
-      author.email.should == @user.email
+    it "copies the attributes from Refinery::WordPress::Author" do
+      expect(@user.username).to eq(author.login)
+      expect(@user.email).to eq(author.email)
     end
   end
 end

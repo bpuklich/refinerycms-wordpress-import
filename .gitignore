@@ -8,3 +8,7 @@ spec/dummy/tmp/
 refinerycms-wordpress-import-*.gem
 *.swp
 Gemfile.lock
+
+.project
+
+.rvmrc

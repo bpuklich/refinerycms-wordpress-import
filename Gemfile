@@ -1,27 +1,21 @@
 source "http://rubygems.org"
-ruby '2.0.0'
 
 gemspec
 
-gem 'refinerycms', '~> 2.0.10'
-gem 'refinerycms-blog', '~> 2.0.4'
-gem 'refinerycms-authentication', '~> 2.0.10'
+gem 'refinerycms', '~> 2.0.0'
+gem 'refinerycms-blog', '~> 2.0'
+gem 'refinerycms-authentication', '~> 2.0.0'
+gem 'globalize3', '0.3.0'
 
-# Refinery/rails should pull in the proper versions of these
-group :assets do
-  gem 'sass-rails'
-  gem 'coffee-rails'
-  gem 'uglifier'
-end
+gem 'shortcode', '0.1.2'
 
-gem 'jquery-rails'
+gem 'sqlite3'
 
 group :development, :test do
   gem 'refinerycms-testing', '~> 2.0.5'
   gem 'factory_girl_rails'
   gem 'generator_spec'
 
-  gem 'database_cleaner'
   gem 'guard-rspec'
   gem 'ffi'
   gem 'guard-bundler'

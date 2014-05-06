@@ -1,3 +1,4 @@
+# encoding: utf-8
 Refinery::Images.configure do |config|
   # Configures the maximum allowed upload size (in bytes) for an image
   # config.max_image_size = 5242880
@@ -35,10 +36,10 @@ Refinery::Images.configure do |config|
   # Configure Dragonfly
   # This is where in the middleware stack to insert the Dragonfly middleware
   # config.dragonfly_insert_before = "ActionDispatch::Callbacks"
-  # config.dragonfly_secret = "9ab8e5ca0fc982b98ed2b5960fcb59b958f87bc46a015ac9"
+  # config.dragonfly_secret = "b0aa6714b9125df54c875cbf3902bf7637c29432fdafdc32"
   # If you decide to trust file extensions replace :ext below with :format
   # config.dragonfly_url_format = "/system/images/:job/:basename.:ext"
-  # config.datastore_root_path = nil
+  # config.datastore_root_path = "/Applications/MAMP/www/refinerycms-wordpress-import3/spec/dummy/public/system/refinery/images"
   # config.trust_file_extensions = false
 
 end
