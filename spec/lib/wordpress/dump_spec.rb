@@ -4,11 +4,11 @@ describe Refinery::WordPress::Dump, :type => :model do
   let(:dump) { test_dump }
 
   it "should create a Dump object given a xml file" do
-    dump.should be_a Refinery::WordPress::Dump
+    expect(dump).to be_a Refinery::WordPress::Dump
   end
 
   it "should include a Nokogiri::XML object" do
-    dump.doc.should be_a Nokogiri::XML::Document
+    expect(dump.doc).to be_a Nokogiri::XML::Document
   end
 
   describe "#tags" do
@@ -17,12 +17,17 @@ describe Refinery::WordPress::Dump, :type => :model do
         Refinery::WordPress::Tag.new('php'), Refinery::WordPress::Tag.new('ruby')]
     end
 
-    specify { dump.tags.count == 4 }
-    specify { dump.tags.first.should be_a(Refinery::WordPress::Tag) }
+    it 'finds all tags' do
+      expect(dump.tags.count).to eq 4
+    end
 
-    it "should return all included tags" do
+    it 'returns a tag' do
+      expect(dump.tags.first).to be_a(Refinery::WordPress::Tag)
+    end
+
+    it "returns all included tags" do
       tags.each do |tag|
-        dump.tags.should include(tag)
+        expect(dump.tags).to include(tag)
       end
     end
   end
@@ -33,53 +38,68 @@ describe Refinery::WordPress::Dump, :type => :model do
        Refinery::WordPress::Category.new('Uncategorized') ]
     end
 
-    specify { dump.categories.count == 4 }
-    specify { dump.categories.first.should be_a(Refinery::WordPress::Category) }
+    it 'finds all categories' do
+      expect(dump.categories.count)
+    end
 
-    it "should return all included categories" do
+    it 'returns a category' do
+      expect(dump.categories.first).to be_a(Refinery::WordPress::Category)
+    end
+
+    it "returns all included categories" do
       categories.each do |cat|
-        dump.categories.should include(cat)
+        expect(dump.categories).to include(cat)
       end
     end
   end
 
   describe "#pages" do
-    it "should return all included pages" do
-      dump.pages.should have(3).pages
+    it "returns all included pages" do
+      expect(dump.pages.count).to eq 3
     end
 
-    specify { dump.pages.first.should be_a(Refinery::WordPress::Page) }
+    it 'returns pages' do
+      expect(dump.pages.first).to be_a(Refinery::WordPress::Page)
+    end
 
-    it "should return only published pages with only_published=true" do
-      dump.pages(true).should have(2).pages
+    context 'only_published is true' do
+      it "returns only published pages" do
+        expect(dump.pages(true).count).to eq(2)
+      end
     end
   end
 
   describe "#authors" do
-    it "should return all authors" do
-      dump.authors.should have(1).author
+    it "returns all authors" do
+      expect(dump.authors.count).to eq 1
     end
 
-    specify { dump.authors.first.should be_a(Refinery::WordPress::Author) }
+    it 'returns an author' do
+      expect(dump.authors.first).to be_a(Refinery::WordPress::Author)
+    end
   end
 
   describe "#posts" do
-    it "should return all posts" do
-      dump.posts.should have(3).posts
+    it "returns all posts" do
+      expect(dump.posts.count).to eq 3
     end
 
-    specify { dump.posts.first.should be_a(Refinery::WordPress::Post) }
+    it 'returns a post' do
+      expect(dump.posts.first).to be_a(Refinery::WordPress::Post)
+    end
 
-    it "should return only published posts with only_published=true" do
-      dump.posts(true).should have(2).posts
+    it "returns only published posts with only_published=true" do
+      expect(dump.posts(true).count).to eq(2)
     end
   end
 
   describe "#attachments" do
-    it "should return all attachments" do
-      dump.attachments.should have(2).attachments
+    it "returns all attachments" do
+      expect(dump.attachments.count).to eq(2)
     end
 
-    specify { dump.attachments.first.should be_a(Refinery::WordPress::Attachment) }
+    it 'returns an attachment' do
+      expect(dump.attachments.first).to be_a(Refinery::WordPress::Attachment)
+    end
   end
 end

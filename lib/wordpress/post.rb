@@ -10,7 +10,7 @@ module Refinery
         end
 
         node.xpath(path).collect do |tag_node|
-          Tag.new(tag_node.text)
+          Tag.new(tag_node.text.strip!)
         end
       end
 
@@ -20,19 +20,19 @@ module Refinery
 
       def categories
         node.xpath("category[@domain='category']").collect do |cat|
-          Category.new(cat.text)
+          Category.new(cat.text.strip!)
         end
       end
 
       def meta_keywords
         if node.xpath('//wp:postmeta[wp:meta_key="_msp_keywords"]/wp:meta_value').count > 0
-          node.xpath('//wp:postmeta[wp:meta_key="_msp_keywords"]/wp:meta_value').first.content
+          node.xpath('//wp:postmeta[wp:meta_key="_msp_keywords"]/wp:meta_value').first.content.strip!
         end
       end
 
       def meta_description
         if node.xpath('//wp:postmeta[wp:meta_key="_msp_description"]/wp:meta_value').count > 0
-          node.xpath('//wp:postmeta[wp:meta_key="_msp_description"]/wp:meta_value').first.content
+          node.xpath('//wp:postmeta[wp:meta_key="_msp_description"]/wp:meta_value').first.content.strip!
         end
       end
 
@@ -46,8 +46,23 @@ module Refinery
         user = ::Refinery::User.find_by_email(creator) || ::Refinery::User.first
         raise "Referenced User doesn't exist! Make sure the authors are imported first."  unless user
 
+        # if the title has already been taken (WP allows duplicates here,
+        # refinery doesn't) append the post_id to it
+
+        safe_title = title
+
+        if allow_duplicates
+          counter = 0
+          until !Refinery::Blog::Post.where('title=?', safe_title).exists? do
+            safe_title = "#{title}-#{counter+=1}"
+          end
+        else
+#           if we don't allow duplicates, then allow this to fail
+          safe_title = title
+        end
+
         begin
-          post = ::Refinery::Blog::Post.new :title => title, :body => content_formatted,
+          post = ::Refinery::Blog::Post.new :title => safe_title, :body => content_formatted,
             :draft => draft?, :published_at => post_date,
             :user_id => user.id, :tag_list => tag_list, :meta_keywords => meta_keywords, :meta_description => meta_description
           post.created_at = post_date
@@ -65,32 +80,12 @@ module Refinery
             end
           end
         rescue ActiveRecord::RecordInvalid
-          # if the title has already been taken (WP allows duplicates here,
-          # refinery doesn't) append the post_id to it, making it unique
-          post.title = "#{title}-#{post_id}"
-          post.save
+          warn "Duplicate title #{safe_title}. Post not imported."
         end
 
         post
       end
 
-      def self.create_blog_page_if_necessary
-        # refinerycms wants a page at /blog, so let's make sure there is one
-        # taken from the original db seeds from refinery-blog
-        unless Refinery::Page.where("link_url = ?", '/blog').exists?
-          page = Refinery::Page.create(
-            :title => "Blog",
-            :link_url => "/blog",
-            :deletable => false,
-            :position => ((Refinery::Page.maximum(:position, :conditions => {:parent_id => nil}) || -1)+1),
-            :menu_match => "^/blogs?(\/|\/.+?|)$"
-          )
-
-          Refinery::Page.default_parts.each do |default_page_part|
-            page.parts.create(:title => default_page_part, :body => nil)
-          end
-        end
-      end
 
     end
   end

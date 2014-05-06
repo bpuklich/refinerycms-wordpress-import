@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'refinerycms-testing', '~> 2.0.3'
   s.add_development_dependency 'database_cleaner'
 
-  s.files = Dir["{app,lib,config}/**/*"] + ["MIT-LICENSE", "Rakefile", "Gemfile", "README.rdoc"]
+  s.files = Dir["{app,lib,config}/**/*"] + ["MIT-LICENSE", "Rakefile", "Gemfile", "README.md"]
 end

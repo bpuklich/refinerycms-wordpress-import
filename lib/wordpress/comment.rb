@@ -8,7 +8,7 @@ module Refinery
       end
 
       def author
-        node.xpath('wp:comment_author').text
+        node.xpath('wp:comment_author').text.strip!
       end
 
       def email

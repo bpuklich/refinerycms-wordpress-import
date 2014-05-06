@@ -1,5 +1,22 @@
 module Refinery
   module WordPress
+
+    def self.create_page_if_necessary(slug)
+      unless Refinery::Page.where("link_url = ?", "/#{slug}").exists?
+        page = Refinery::Page.create(
+          :title => "Blog",
+          :link_url => "/blog",
+          :deletable => false,
+          # :position => ((Refinery::Page.maximum(:position, :conditions => {:parent_id => nil}) || -1)+1),
+          :menu_match => "^/blogs?(\/|\/.+?|)$"
+        )
+
+        Refinery::Pages.default_parts.each do |default_page_part|
+          page.parts.create(:title => default_page_part, :body => nil)
+        end
+      end
+    end
+
     class Page
       include ::ActionView::Helpers::TagHelper
       include ::ActionView::Helpers::TextHelper
@@ -17,7 +34,6 @@ module Refinery
 
       def title
         node.xpath("title").text.presence || 'Title'
-
       end
 
       def content
