@@ -147,7 +147,7 @@ describe Refinery::WordPress::Page, :type => :model do
 
   describe "#format_base64_images" do
     let(:sample_text) do
-    # the image is a 10x10px red square
+    # the first image is a 10x10px red square, the second a 10x10px green square
       text = <<-EOT
         <img alt=""
           src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABVJREFUeNpi/M+ADzAxjEpjAQABBgBBLAETbs/ntQAAAABJRU5ErkJggg==" />
