@@ -59,6 +59,26 @@ describe Refinery::WordPress::Page, :type => :model do
        expect(@result).to include_an_html_tag(:p)
     end
   end
+
+  describe '#remove_inline_styles' do
+    let(:sample_text) do
+      text = <<-EOT
+        <p><span style="font-size: medium; color: #000000; font-family: verdana,geneva;">Sometimes less than reputable companies make special offers that they have no intent
+        ion of carrying out just to win the job. </span>
+        <span style="font-size: medium; color: #000000; font-family: verdana,geneva;"> The reputation of the company you are dealing with is probably more important than any
+         written warranty.</span>
+        </p>
+      EOT
+    end
+
+    before do
+      @result = page.send(:remove_inline_styles, sample_text)
+    end
+
+    it 'removes style attributes from the text' do
+      expect(@result).to include_an_html_tag(:span).without_html_attributes([:style])
+    end
+  end
   describe "#format_shortcodes" do
 
     describe '#rewrite ruby shortcode' do
@@ -129,7 +149,12 @@ describe Refinery::WordPress::Page, :type => :model do
     let(:sample_text) do
     # the image is a 10x10px red square
       text = <<-EOT
-        <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABVJREFUeNpi/M+ADzAxjEpjAQABBgBBLAETbs/ntQAAAABJRU5ErkJggg==" />
+        <img alt=""
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABVJREFUeNpi/M+ADzAxjEpjAQABBgBBLAETbs/ntQAAAABJRU5ErkJggg==" />
+        <p>a second image here:
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi7Dpqz4AbMDHgBSNVGiDAAOyEAaKfkePAAAAAAElFTkSuQmCC"/>
+
+ /></p>
       EOT
     end
 
@@ -137,16 +162,19 @@ describe Refinery::WordPress::Page, :type => :model do
       @result = page.send(:format_base64_images, sample_text, 1000)
     end
 
-    it 'returns a reference to an img src file named for the post-id' do
-      expect(@result).to include("src='post1000.png'")
+    it 'returns a reference to img src files named for the post-id and image index' do
+      expect(@result).to include("src='post1000-0.png'")
+      expect(@result).to include("src='post1000-1.png'")
     end
 
-    it 'creates a file containing the decoded image' do
-      expect(File.exist?("#{Rails.public_path}/post1000.png")).to be_true
+    it 'creates files containing the decoded image' do
+      expect(File.exist?("#{Rails.public_path}/post1000-0.png")).to be_true
+      expect(File.exist?("#{Rails.public_path}/post1000-1.png")).to be_true
     end
 
     after do
-      File.delete("#{Rails.public_path}/post1000.png")
+      File.delete("#{Rails.public_path}/post1000-0.png")
+      File.delete("#{Rails.public_path}/post1000-1.png")
     end
   end #format_base64_images
 

@@ -41,7 +41,7 @@ module Refinery
       end
 
       def content_formatted
-         formatted = format_paragraphs(format_shortcodes(format_base64_images(content, post_id)))
+         formatted = remove_inline_styles(format_paragraphs(format_shortcodes(format_base64_images(content, post_id))))
 
         # # remove all tags inside <pre> that simple_format created
         # # TODO: replace format_paragraphs with a method, that ignores pre-tags
@@ -114,6 +114,12 @@ module Refinery
         text.html_safe.safe_concat("</p>")
       end
 
+      def remove_inline_styles(text)
+#         so many inline styles
+        text = ''.html_safe if text.nil?
+        text.gsub!(/style\s*=\s*"[^"]*"[^>]*/,' ')
+      end
+
       # def format_syntax_highlighter(text)
         # # Support for SyntaxHighlighter (http://alexgorbatchev.com/SyntaxHighlighter/):
         # # In WordPress you can (via a plugin) enclose code in [lang][/lang]
@@ -136,17 +142,20 @@ module Refinery
 
 #       Replace bas64 encoded images with a file reference. Write the file out
       def format_base64_images(text, id)
-#         TODO handle more than one image per page/post
-        matchString = /src="data:image\/(\w+?);base64,(.*?)"/
-        mimetype, b64 = text.scan(matchString).flatten
 
-        unless b64.nil?
-          filename = 'post' + id.to_s + '.' + mimetype
-          fullfilespec = "#{Rails.public_path}/#{filename}"
-          File.open(fullfilespec, 'wb') do |f|
-            f.write(Base64.decode64(b64))
+        matchString = /src="data:image\/(\w+?);base64,(.*?)"/
+        matches = text.scan(matchString)
+        matches.each_with_index do |(mimetype, b64), ix|
+
+          unless b64.nil?
+            filename = 'post' + id.to_s + '-' + ix.to_s + '.' + mimetype
+            fullfilespec = "#{Rails.public_path}/#{filename}"
+            File.open(fullfilespec, 'wb') do |f|
+              f.write(Base64.decode64(b64))
+            end
+            text.sub!(matchString, "src='#{filename}'")
           end
-          text.gsub!(matchString, "src='#{filename}'")
+
         end
         text
       end
