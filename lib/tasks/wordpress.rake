@@ -2,7 +2,7 @@ require 'wordpress'
 
 namespace :wordpress do
 
-  BLOG_TABLES  = %w(ActsAsTaggableOn::Tag Refinery::Blog::Post)
+  BLOG_TABLES  = %w(ActsAsTaggableOn::Tag Refinery::Blog::Post Refinery::Blog::Categories)
   CMS_TABLES   = %w(Refinery::Page)
   MEDIA_TABLES = %w(Refinery::Image Refinery::Resource)
 
@@ -54,17 +54,14 @@ namespace :wordpress do
     puts "Importing #{dump.authors.count} authors ..."
     dump.authors.each(&:to_refinery)
 
-    puts "Importing #{dump.categories.count} categories ..."
-    dump.categories.each(&:to_refinery)
-
     only_published =         ENV['ONLY_PUBLISHED'].present?
     allow_duplicate_titles = ENV['ALLOW_DUPLICATES'].present?
 
-    puts "Importing #{dump.posts(only_published).count} #{only_published ? 'published' : '(all)'} pages"
+    puts "Importing #{dump.posts(only_published).count} #{only_published ? 'published' : '(all)'} posts"
     puts "Duplicate titles #{allow_duplicate_titles ? '' : 'not '}allowed."
 
     dump.posts(only_published).each do |p|
-      puts "Importing page #{p.title}"
+      puts "Importing post #{p.title}"
       p.to_refinery(allow_duplicate_titles)
     end
     Refinery::WordPress.create_page_if_necessary('blog')

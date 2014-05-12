@@ -20,8 +20,12 @@ module Refinery
 
       def categories
         node.xpath("category[@domain='category']").collect do |cat|
-          Category.new(cat.text.strip!)
+          Category.new(cat.text.strip)
         end
+      end
+
+      def cat_list
+        categories.collect(&:name).to_sentence
       end
 
       def meta_keywords
@@ -62,6 +66,8 @@ module Refinery
         end
 
         begin
+          puts "  Tags:       #{tag_list}"
+          puts "  Categories: #{cat_list}"
           post = ::Refinery::Blog::Post.new :title => safe_title, :body => content_formatted,
             :draft => draft?, :published_at => post_date,
             :user_id => user.id, :tag_list => tag_list, :meta_description => meta_description
