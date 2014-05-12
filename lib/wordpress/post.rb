@@ -67,8 +67,8 @@ module Refinery
             :user_id => user.id, :tag_list => tag_list, :meta_keywords => meta_keywords, :meta_description => meta_description
           post.created_at = post_date
           post.save!
-
           ::Refinery::Blog::Post.transaction do
+            puts "Category count is #{categories.count}"
             categories.each do |category|
               post.categories << category.to_refinery
             end

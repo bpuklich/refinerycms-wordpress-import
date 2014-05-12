@@ -4,12 +4,12 @@ describe Refinery::WordPress::Category, :type => :model do
   let(:category) { Refinery::WordPress::Category.new('Rant') }
 
   describe "#name" do
-    specify { category.name.should == 'Rant' }
+    specify { expect(category.name).to eq('Rant') }
   end
 
   describe "#==" do
-    specify { category.should == Refinery::WordPress::Category.new('Rant') }
-    specify { category.should_not == Refinery::WordPress::Category.new('Tutorials') }
+    specify { expect(category).to be_a(Refinery::WordPress::Category) }
+    specify { expect(category.name).to eq('Rant') }
   end
 
   describe "#to_refinery" do
@@ -17,12 +17,12 @@ describe Refinery::WordPress::Category, :type => :model do
       @category = category.to_refinery
     end
 
-    it "should create a BlogCategory" do
-      Refinery::Blog::Category.should have(1).record
+    it "creates a BlogCategory" do
+      expect(Refinery::Blog::Category.count).to eq(1)
     end
 
-    it "should copy the name over to the BlogCategory object" do
-      @category.title.should == category.name
+    it "names the BlogCategory correctly" do
+      expect(@category.title).to eq(category.name)
     end
   end
 

@@ -30,11 +30,11 @@ namespace :wordpress do
     only_published =         ENV['ONLY_PUBLISHED'].present?
     allow_duplicate_titles = ENV['ALLOW_DUPLICATES'].present?
 
-    puts "Importing #{dump.posts(only_published).count} #{only_published ? 'published' : '(all)'} pages"
+    puts "Importing #{dump.posts(only_published).count} #{only_published ? 'published' : '(all)'} posts"
     puts "Duplicate titles #{allow_duplicate_titles ? '' : 'not '}allowed."
 
     dump.posts(only_published).each do |p|
-      puts "Importing page #{p.title}"
+      puts "Importing post #{p.title}"
       p.to_refinery(allow_duplicate_titles)
     end
     Refinery::WordPress.create_page_if_necessary('blog')

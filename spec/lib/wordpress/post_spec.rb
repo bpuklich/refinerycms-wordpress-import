@@ -115,8 +115,8 @@ describe Refinery::WordPress::Post, :type => :model do
           expect(Refinery::Blog::Post.count).to eq(2)
         end
 
-        it "appends the #post_id to the original title" do
-          expect(@ref_post.title).to eq("#{post.title}-#{post.post_id}")
+        it "appends a counter to the original title" do
+          expect(@ref_post.title).to match(/#{Regexp.quote(post.title)}-\d+/)
         end
 
         describe 'it saves the post with all attributes and associations' do
@@ -131,10 +131,10 @@ describe Refinery::WordPress::Post, :type => :model do
       end
 
       context '(duplicate titles not allowed)' do
-
-        it 'raises an error' do
-          expect{post.to_refinery(false)}.to raise_error('Duplicate title. Post not imported.')
-        end
+#       output matcher is in rspec 3
+        # it 'warns about the post being a duplicate' do
+          # expect(post.to_refinery(false)).to output('Duplicate title. Post not imported.\n').to_stderr
+        # end
       end
     end
   end
