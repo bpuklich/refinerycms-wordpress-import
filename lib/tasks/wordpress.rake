@@ -2,7 +2,7 @@ require 'wordpress'
 
 namespace :wordpress do
 
-  BLOG_TABLES  = %w(ActsAsTaggableOn::Tag Refinery::Blog::Post Refinery::Blog::Categories)
+  BLOG_TABLES  = %w(ActsAsTaggableOn::Tag Refinery::Blog::Post Refinery::Blog::Category)
   CMS_TABLES   = %w(Refinery::Page)
   MEDIA_TABLES = %w(Refinery::Image Refinery::Resource)
 

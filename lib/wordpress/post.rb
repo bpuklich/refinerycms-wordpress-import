@@ -10,7 +10,7 @@ module Refinery
         end
 
         node.xpath(path).collect do |tag_node|
-          Tag.new(tag_node.text.strip!)
+          Tag.new(tag_node.text)
         end
       end
 
@@ -20,7 +20,7 @@ module Refinery
 
       def categories
         node.xpath("category[@domain='category']").collect do |cat|
-          Category.new(cat.text.strip)
+          Category.new(cat.text)
         end
       end
 
@@ -66,8 +66,6 @@ module Refinery
         end
 
         begin
-          puts "  Tags:       #{tag_list}"
-          puts "  Categories: #{cat_list}"
           post = ::Refinery::Blog::Post.new :title => safe_title, :body => content_formatted,
             :draft => draft?, :published_at => post_date,
             :user_id => user.id, :tag_list => tag_list, :meta_description => meta_description
