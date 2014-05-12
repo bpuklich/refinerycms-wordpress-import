@@ -4,12 +4,11 @@ describe Refinery::WordPress::Category, :type => :model do
   let(:category) { Refinery::WordPress::Category.new('Rant') }
 
   describe "#name" do
-    specify { category.name.should == 'Rant' }
+    specify {expect(category.name).to ==('Rant' )}
   end
 
   describe "#==" do
-    specify { category.should == Refinery::WordPress::Category.new('Rant') }
-    specify { category.should_not == Refinery::WordPress::Category.new('Tutorials') }
+    specify {expect(category).to be_a(Refinery::WordPress::Category)}
   end
 
   describe "#to_refinery" do

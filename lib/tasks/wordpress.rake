@@ -13,6 +13,33 @@ namespace :wordpress do
     clear_tables(BLOG_TABLES)
   end
 
+  desc "Import categories from a Refinery::WordPress XML dump"
+  task :import_categories, :file_name do |task, params|
+    Rake::Task["environment"].invoke
+
+    if params[:file_name].nil?
+      raise "Please specify file_name as a rake parameter (use [filename] after task_name...)"
+    end
+
+    dump = Refinery::WordPress::Dump.new(params[:file_name])
+    puts "Importing #{dump.categories.count} categories ..."
+    dump.categories.each(&:to_refinery)
+
+  end
+
+  desc "Import tags from a Refinery::WordPress XML dump"
+  task :import_tags, :file_name do |task, params|
+    Rake::Task["environment"].invoke
+
+    if params[:file_name].nil?
+      raise "Please specify file_name as a rake parameter (use [filename] after task_name...)"
+    end
+
+    dump = Refinery::WordPress::Dump.new(params[:file_name])
+    puts "Importing #{dump.tags.count} tags ..."
+    dump.tags.each(&:to_refinery)
+
+  end
 
   desc "Import blog data from a Refinery::WordPress XML dump"
   task :import_blog, :file_name do |task, params|
@@ -26,6 +53,9 @@ namespace :wordpress do
 
     puts "Importing #{dump.authors.count} authors ..."
     dump.authors.each(&:to_refinery)
+
+    puts "Importing #{dump.categories.count} categories ..."
+    dump.categories.each(&:to_refinery)
 
     only_published =         ENV['ONLY_PUBLISHED'].present?
     allow_duplicate_titles = ENV['ALLOW_DUPLICATES'].present?
@@ -140,7 +170,6 @@ namespace :wordpress do
 # ------------------------------------- End full import task ---------------------------------------------------------
 
 # ------------------------------------- utilities -------------------------------------------------------------
-
   def clear_tables(tables, offset=0)
     tables.each do |table_name|
       # deletes dependent records as well.

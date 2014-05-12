@@ -5,6 +5,24 @@ describe 'Wordpress rake tasks' do
     let(:dump) { test_dump }
   end
 # ------------------------------------- Begin blog processing tasks --------------------------------------------------
+  describe 'wordpress:import_categories' do
+    include_context 'rake'
+
+    it 'imports all the categories' do
+      subject.invoke
+      expect(Tag.count).to eq(3)
+    end
+  end
+
+  describe 'wordpress:import_tags' do
+    include_context 'rake'
+
+    it 'imports all the tags' do
+      subject.invoke
+      expect(Tag.count).to eq(3)
+    end
+  end
+
 
   describe 'wordpress:blog_reset' do
     include_context 'rake'

@@ -46,7 +46,7 @@ module Refinery
 
       def categories
         doc.xpath("//wp:category/wp:cat_name").collect do |category|
-          Category.new(category.text.strip!)
+          Category.new(category.text)
         end
       end
 
