@@ -117,7 +117,7 @@ module Refinery
       def remove_inline_styles(text)
 #         so many inline styles
         text = ''.html_safe if text.nil?
-        text.gsub!(/style\s*=\s*"[^"]*"[^>]*/,' ')
+        return text.gsub(/style\s*=\s*"[^"]*"[^>]*/,' ')
       end
 
       # def format_syntax_highlighter(text)

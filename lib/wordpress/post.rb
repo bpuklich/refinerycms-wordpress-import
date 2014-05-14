@@ -10,7 +10,7 @@ module Refinery
         end
 
         node.xpath(path).collect do |tag_node|
-          Tag.new(tag_node.text)
+          Tag.new(tag_node.text.strip)
         end
       end
 
@@ -20,7 +20,7 @@ module Refinery
 
       def categories
         node.xpath("category[@domain='category']").collect do |cat|
-          Category.new(cat.text)
+          Category.new(cat.text.strip)
         end
       end
 
@@ -46,18 +46,17 @@ module Refinery
         end
       end
 
-      def to_refinery(allow_duplicates=false)
+      def to_refinery(allow_duplicates=false, verbose=false)
         user = ::Refinery::User.find_by_email(creator) || ::Refinery::User.first
         raise "Referenced User doesn't exist! Make sure the authors are imported first."  unless user
 
-        # if the title has already been taken (WP allows duplicates here,
-        # refinery doesn't) append the post_id to it
+        # if the title has already been taken (WP allows duplicates here, refinery doesn't) append a counter to the title
 
         safe_title = title
 
         if allow_duplicates
           counter = 0
-          until !Refinery::Blog::Post.where('title=?', safe_title).exists? do
+          while Refinery::Blog::Post.where('title=?', safe_title).exists? do
             safe_title = "#{title}-#{counter+=1}"
           end
         else
@@ -83,11 +82,14 @@ module Refinery
               comment.save
             end
           end
-        rescue ActiveRecord::RecordInvalid
-          warn "Duplicate title #{safe_title}. Post not imported."
-        end
-
-        post
+        rescue Exception => e
+          if e.message=="Validation failed: Title has already been taken"
+            raise "Duplicate title #{safe_title}. Post not imported." unless !verbose
+          else
+            raise
+          end
+       end
+       post
       end
 
 

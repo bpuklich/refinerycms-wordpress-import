@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'refinerycms-core', '~> 2.1.0'
   s.add_dependency 'refinerycms-blog', '~> 2.1.0'
+  s.add_dependency 'acts-as-taggable-on'
   s.add_dependency 'nokogiri', '~> 1.6.0'
   s.add_dependency 'shortcode'
 

@@ -103,7 +103,7 @@ describe Refinery::WordPress::Post, :type => :model do
     context "with a duplicate title" do
       before do
         # create a post with the same title as ours
-        Refinery::Blog::Post.create! :title => post.title, :body => 'Lorem', :author => @user
+        Refinery::Blog::Post.create! :title => post.title, :body => 'Lorem', :author => @user, :published_at => Time.now
       end
 
       context '(duplicate titles allowed)' do
@@ -115,10 +115,10 @@ describe Refinery::WordPress::Post, :type => :model do
           expect(Refinery::Blog::Post.count).to eq(2)
         end
 
-        it "appends the #post_id to the original title" do
-          expect(@ref_post.title).to eq("#{post.title}-#{post.post_id}")
+        it "appends a counter to the original title" do
+          expect(@ref_post.title).to match(/#{Regexp.quote(post.title)}-\d/)
         end
-
+#{Regexp.quote(foo)}
         describe 'it saves the post with all attributes and associations' do
           it "assigns a category for each Refinery::WordPress::Category assigned to this post" do
             expect(@ref_post.categories.count).to eq(post.categories.count)
@@ -133,7 +133,7 @@ describe Refinery::WordPress::Post, :type => :model do
       context '(duplicate titles not allowed)' do
 
         it 'raises an error' do
-          expect{post.to_refinery(false)}.to raise_error('Duplicate title. Post not imported.')
+          expect{post.to_refinery(false, true)}.to raise_error("Duplicate title #{post.title}. Post not imported.")
         end
       end
     end

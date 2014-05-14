@@ -4,7 +4,7 @@ describe Refinery::WordPress::Category, :type => :model do
   let(:category) { Refinery::WordPress::Category.new('Rant') }
 
   describe "#name" do
-    specify {expect(category.name).to ==('Rant' )}
+    specify {expect(category.name).to eq('Rant' )}
   end
 
   describe "#==" do

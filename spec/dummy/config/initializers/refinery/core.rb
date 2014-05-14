@@ -10,6 +10,11 @@ Refinery::Core.configure do |config|
   # the default file system for storing resources and images
   config.s3_backend = !(ENV['S3_KEY'].nil? || ENV['S3_SECRET'].nil?)
 
+  # Use a custom Dragonfly storage backend instead of the default
+  # file system for storing resources and images
+  # config.dragonfly_custom_backend_class = nil
+  # config.dragonfly_custom_backend_opts = {}
+
   # Whenever Refinery caches anything and can set a cache key, it will add
   # a prefix to the cache key containing the string you set here.
   # config.base_cache_key = :refinery
@@ -23,23 +28,11 @@ Refinery::Core.configure do |config|
   # config.google_analytics_page_code = "UA-xxxxxx-x"
 
   # Enable/disable authenticity token on frontend
-  # config.authenticity_token_on_frontend = true
-
-  # Hide/show child pages in menu
-  # config.menu_hide_children = false
-
-  # CSS class selectors for menu helper
-  # config.menu_css = {:selected=>"selected", :first=>"first", :last=>"last"}
+  # config.authenticity_token_on_frontend = false
 
   # Should set this if concerned about DOS attacks. See
   # http://markevans.github.com/dragonfly/file.Configuration.html#Configuration
-  # config.dragonfly_secret = "b0aa6714b9125df54c875cbf3902bf7637c29432fdafdc32"
-
-  # Show/hide IE6 upgrade message in the backend
-  # config.ie6_upgrade_message_enabled = true
-
-  # Show/hide browser update message in the backend
-  # config.show_internet_explorer_upgrade_message = false
+  # config.dragonfly_secret = "c17761fb9a957db9e2873579feeb45811d68f54ab49e89fd"
 
   # Add extra tags to the wymeditor whitelist e.g. = {'tag' => {'attributes' => {'1' => 'href'}}} or just {'tag' => {}}
   # config.wymeditor_whitelist_tags = {}
@@ -49,4 +42,7 @@ Refinery::Core.configure do |config|
 
   # Register extra stylesheet for backend (optional options)
   # config.register_stylesheet "custom", :media => 'screen'
+
+  # Specify a different backend path than the default of /refinery.
+  # config.backend_route = "refinery"
 end
