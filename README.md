@@ -38,8 +38,8 @@ Importing the XML dump is done via rake tasks in three stages, any of which are 
 ### 1. Wordpress post/Refinery blog tasks
 
     1. rake wordpress:reset_blog
-    2. rake wordpress:import_blog[file_name] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1*
-    3. rake wordpress:reset_and_import_blog[file_name] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1*
+    2. rake wordpress:import_blog[file_name] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1* *SILENT=1*
+    3. rake wordpress:reset_and_import_blog[file_name] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1* *SILENT=1*
 
 __Task 1__ deletes posts from Refinery blog tables along with their associated records (taggings, tags, blog_comments, blog_categories, blog_posts, blog_categories_blog_posts).
 This task is useful if you need to rerun the import process.
@@ -49,6 +49,7 @@ __Task 2__ parses the XML dump and imports blog posts, authors, comments, catego
 The *file_name* parameter is the path to the dump file.
 
 *ONLY_PUBLISHED* and *ALLOW_DUPLICATES* are optional environment variables you can use to control the import.
+*SILENT* suppresses all information messages
 
 To avoid importing draft posts, set the ENV variable ONLY_PUBLISHED to any value.
 
@@ -67,8 +68,8 @@ __Task 3__ combines the two previous tasks.
 Three rake tasks manage the import into RefineryCMS Pages.
 
     1. rake wordpress:reset_pages[offset_id]
-    2. rake wordpress:import_pages[file_name, offset_id, parent] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1*
-    3. rake wordpress:reset_and_import_pages[file_name, offset_id, parent] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1*
+    2. rake wordpress:import_pages[file_name, offset_id, parent] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1*  *SILENT=1*
+    3. rake wordpress:reset_and_import_pages[file_name, offset_id, parent] *ONLY_PUBLISHED=1* *ALLOW_DUPLICATES=1*  *SILENT=1*
 
 __Parameters__
 
@@ -80,6 +81,7 @@ If your highest Refinery page id is 55, you might set an offset_id of 100. (or 5
 _parent_: (no default) By default pages without a parent-id will be set to be top-level pages. To attach these pages as children of a specific page use the page slug.
 
 *ONLY_PUBLISHED* and *ALLOW_DUPLICATES* are optional environment variables you can use to control the import.
+*SILENT* suppresses all information messages.
 
 To avoid importing draft pages set the ENV variable ONLY_PUBLISHED.
 

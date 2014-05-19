@@ -9,59 +9,45 @@ namespace :wordpress do
 # ------------------------------------- Begin blog processing tasks --------------------------------------------------
  desc 'Reset the blog tables for a clean import'
   task :reset_blog do
-    Rake::Task['environment'].invoke
+    init
     clear_tables(BLOG_TABLES)
   end
 
   desc "Import categories from a Refinery::WordPress XML dump"
   task :import_categories, :file_name do |task, params|
-    Rake::Task["environment"].invoke
 
-    if params[:file_name].nil?
-      raise "Please specify file_name as a rake parameter (use [filename] after task_name...)"
-    end
-
+    init
     dump = Refinery::WordPress::Dump.new(params[:file_name])
-    puts "Importing #{dump.categories.count} categories ..."
+    puts "Importing #{dump.categories.count} categories ..."  unless silent
     dump.categories.each(&:to_refinery)
 
   end
 
   desc "Import tags from a Refinery::WordPress XML dump"
   task :import_tags, :file_name do |task, params|
-    Rake::Task["environment"].invoke
 
-    if params[:file_name].nil?
-      raise "Please specify file_name as a rake parameter (use [filename] after task_name...)"
-    end
-
+    init
     dump = Refinery::WordPress::Dump.new(params[:file_name])
-    puts "Importing #{dump.tags.count} tags ..."
+    puts "Importing #{dump.tags.count} tags ..."  unless silent
     dump.tags.each(&:to_refinery)
 
   end
 
   desc "Import blog data from a Refinery::WordPress XML dump"
   task :import_blog, :file_name do |task, params|
-    Rake::Task["environment"].invoke
 
-    if params[:file_name].nil?
-      raise "Please specify file_name as a rake parameter (use [filename] after task_name...)"
-    end
-
+    init
     dump = Refinery::WordPress::Dump.new(params[:file_name])
 
     puts "Importing #{dump.authors.count} authors ..."
     dump.authors.each(&:to_refinery)
 
-    only_published =         ENV['ONLY_PUBLISHED'].present?
-    allow_duplicate_titles = ENV['ALLOW_DUPLICATES'].present?
 
-    puts "Importing #{dump.posts(only_published).count} #{only_published ? 'published' : '(all)'} posts"
-    puts "Duplicate titles #{allow_duplicate_titles ? '' : 'not '}allowed."
+    puts "Importing #{dump.posts(only_published).count} #{only_published ? 'published' : '(all)'} posts"  unless silent
+    puts "Duplicate titles #{allow_duplicate_titles ? '' : 'not '}allowed."  unless silent
 
     dump.posts(only_published).each do |p|
-      puts "Importing post #{p.title}"
+      puts "Importing post #{p.title}"  unless silent
       p.to_refinery(allow_duplicate_titles)
     end
     Refinery::WordPress.create_page_if_necessary('blog')
@@ -69,7 +55,6 @@ namespace :wordpress do
 
   desc 'Reset blog tables and then import blog data from a Refinery::WordPress XML dump'
   task :reset_and_import_blog, :file_name do |task, params|
-    Rake::Task['environment'].invoke
     Rake::Task['wordpress:reset_blog'].invoke
     Rake::Task['wordpress:import_blog'].invoke(params[:file_name])
   end
@@ -86,17 +71,15 @@ namespace :wordpress do
 
   desc 'Import CMS data from a WordPress XML dump'
   task :import_pages, [:file_name, :id_offset, :page_parent] do |task, params|
+    init
 
     params.with_defaults :id_offset => 0
     params.with_defaults :page_parent => 'blog'
     offset = params[:id_offset].to_i
 
-    Rake::Task['environment'].invoke
-
-    dump = Refinery::WordPress::Dump.new(params[:file_name])
     only_published = ENV['ONLY_PUBLISHED'].present?
 
-    puts "Importing #{dump.pages(only_published).count} #{only_published ? 'published' : '(all)'} pages"
+    puts "Importing #{dump.pages(only_published).count} #{only_published ? 'published' : '(all)'} pages"  unless silent
     dump.pages(only_published).each do |p|
       p.to_refinery(offset)
     end
@@ -106,7 +89,7 @@ namespace :wordpress do
     # After all pages are persisted we can now create the parent - child
     # relationships. This is necessary, as WordPress doesn't dump the pages in
     # a correct order.
-    puts 'Linking pages to their parents'
+    puts 'Linking pages to their parents'  unless silent
     default_parent_page_id = Refinery::Page.where('slug = ?', "#{params[:page_parent]}").first.id
     dump.pages(only_published).each do |dump_page|
       page = Refinery::Page.find(dump_page.post_id + offset)
@@ -117,7 +100,6 @@ namespace :wordpress do
 
   desc 'Reset CMS tables and then import CMS data from a WordPress XML dump'
   task :reset_and_import_pages, :file_name, :id_offset do |task, params|
-    Rake::Task['environment'].invoke
     Rake::Task['wordpress:reset_pages'].invoke(params[:id_offset])
     Rake::Task['wordpress:import_pages'].invoke(params[:file_name],params[:id_offset],params[:page_parent])
   end
@@ -135,15 +117,15 @@ namespace :wordpress do
 
   desc 'Import media data (images and files) from a WordPress XML dump and replace target URLs in pages and posts'
   task :import_media, :file_name do |task, params|
-    Rake::Task['environment'].invoke
+    init
     dump = Refinery::WordPress::Dump.new(params[:file_name])
 
-    puts 'Importing images and resources'
+    puts 'Importing images and resources'  unless silent
     attachments = dump.attachments.each(&:to_refinery)
 
     # parse all created BlogPost and Page bodys and replace the old wordpress media urls
     # with the newly created ones
-    puts 'Linking images and resources to posts and pages'
+    puts 'Linking images and resources to posts and pages'  unless silent
     attachments.each do |attachment|
       attachment.replace_url
     end
@@ -151,7 +133,6 @@ namespace :wordpress do
 
   desc 'Reset media tables and then import media data from a WordPress XML dump'
   task :reset_and_import_media, :file_name, :id_offset do |task, params|
-    Rake::Task['environment'].invoke
     Rake::Task['wordpress:reset_media'].invoke(params[:id_offset])
     Rake::Task['wordpress:import_media'].invoke(params[:file_name])
   end
@@ -159,7 +140,6 @@ namespace :wordpress do
 
   desc 'Reset and import all data (see the other tasks)'
   task :full_import, :file_name, :page_id_offset, :page_parent, :media_id_offset do |task, params|
-    Rake::Task['environment'].invoke
     Rake::Task['wordpress:reset_and_import_blog'].invoke(params[:file_name])
     Rake::Task['wordpress:reset_and_import_pages'].invoke(params[:file_name],params[:page_id_offset],params[:page_parent])
     Rake::Task['wordpress:reset_and_import_media'].invoke(params[:file_name],params[:media_id_offset])
@@ -167,10 +147,23 @@ namespace :wordpress do
 # ------------------------------------- End full import task ---------------------------------------------------------
 
 # ------------------------------------- utilities -------------------------------------------------------------
+  def init
+    # Steps common to all tasks
+    Rake::Task["environment"].invoke
+    if params[:file_name].nil?
+      raise "Please specify file_name as a rake parameter (use [filename] after task_name...)"
+    end
+    # Check environment variables
+    only_published =         ENV['ONLY_PUBLISHED'].present?
+    allow_duplicate_titles = ENV['ALLOW_DUPLICATES'].present?
+    silent =                 ENV['SILENT'].present?
+  end
+
   def clear_tables(tables, offset=0)
+
     tables.each do |table_name|
       # deletes dependent records as well.
-      puts "Deleting records with ids>#{offset} from #{table_name} ..."
+      puts "Deleting records with ids>#{offset} from #{table_name} ..." unless silent
       table_name.constantize.where('id>?', offset).destroy_all
 
     end
