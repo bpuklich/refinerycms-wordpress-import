@@ -2,17 +2,17 @@ source "http://rubygems.org"
 
 gemspec
 
-gem 'refinerycms', '~> 2.0.0'
-gem 'refinerycms-blog', '~> 2.0'
-gem 'refinerycms-authentication', '~> 2.0.0'
-gem 'globalize3', '0.3.0'
+gem 'refinerycms', '~> 2.1.0'
+gem 'refinerycms-blog', '~> 2.1.0'
+gem 'refinerycms-authentication', '~> 2.1.0'
+gem 'acts-as-taggable-on'
+gem 'globalize'
 
 gem 'shortcode', '0.1.2'
 
 gem 'sqlite3'
 
 group :development, :test do
-  gem 'refinerycms-testing', '~> 2.0.5'
   gem 'factory_girl_rails'
   gem 'generator_spec'
 

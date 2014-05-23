@@ -40,13 +40,13 @@ module Refinery
 
       def tags
         doc.xpath("//wp:tag/wp:tag_slug").collect do |tag|
-          Tag.new(tag.text)
+         Tag.new(tag.text.strip)
         end
       end
 
       def categories
         doc.xpath("//wp:category/wp:cat_name").collect do |category|
-          Category.new(category.text)
+          Category.new(category.text.strip)
         end
       end
 

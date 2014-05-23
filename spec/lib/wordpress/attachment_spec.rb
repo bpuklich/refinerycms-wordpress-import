@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe Refinery::WordPress::Attachment, :type => :model do
-  context "with an image attachment" do
+  context "when the attachment is an image" do
     let(:attachment) { test_dump.attachments.first }
 
     it 'reads attachment data from the XML dump' do
       expect(attachment.title).to eq('200px-Tux.svg')
-      # doesn't get exported atm. for some reason
       expect(attachment.description).to   eq('')
       expect(attachment.url).to           eq('http://localhost/wordpress/wp-content/uploads/2011/05/200px-Tux.svg_.png')
       expect(attachment.file_name).to     eq('200px-Tux.svg_.png')
@@ -19,11 +18,11 @@ describe Refinery::WordPress::Attachment, :type => :model do
         @image = attachment.to_refinery
       end
 
-      it "should create an Image from the Attachment" do
+      it "creates a Refinery::Image from the attachment" do
         expect(@image).to be_a(Refinery::Image)
       end
 
-      it "should copy the attributes from Attachment" do
+      it "copies the attributes from the attachment" do
         expect(@image.created_at).to eq(attachment.post_date)
         expect(@image.image.url).to end_with(attachment.file_name)
       end
@@ -35,15 +34,14 @@ describe Refinery::WordPress::Attachment, :type => :model do
       before do
         test_dump.authors.each(&:to_refinery)
         test_dump.posts.each do |p|
-          # allow duplicates, as there is a duplicate post in the test dump
-          p.to_refinery(true)
+          p.to_refinery(true, true)  # allow_duplicates=true  Verbose=true
         end
         @image = attachment.to_refinery
-
         attachment.replace_url
       end
 
-      it 'has a new url' do
+      it 'removes the old url from posts' do
+
         expect(post.body).to_not include(attachment.url)
         expect(post.body).to_not include('200px-Tux.svg_-150x150.png')
         expect(post.body).to_not include('wp-content')
