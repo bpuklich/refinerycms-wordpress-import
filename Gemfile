@@ -31,7 +31,7 @@ group :development, :test do
   end
 
   platforms :ruby do
-    gem 'spork', '0.9.0.rc9'
+    gem 'spork'
     gem 'guard-spork'
 
     unless ENV['TRAVIS']

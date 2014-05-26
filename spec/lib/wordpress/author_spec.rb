@@ -13,7 +13,14 @@ describe Refinery::WordPress::Author, :type => :model do
 
     it "creates a User object" do
       expect(Refinery::User.count).to eq(1)
+    end
+
+    it 'returns a Refinery user' do
       expect(@user).to be_a(Refinery::User)
+    end
+
+    it 'assigns the role "Refinery" to the user' do
+      expect(@user.roles.first.title).to eq('Refinery')
     end
 
     it "persists the user" do
