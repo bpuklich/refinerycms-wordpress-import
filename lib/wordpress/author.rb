@@ -26,6 +26,7 @@ module Refinery
       def to_refinery
         user = Refinery::User.find_or_initialize_by_username_and_email(login,email)
         if user.new_record?
+          user.add_role(:refinery)
           user.password = user.password_confirmation = 'password'
           user.save!
         end
