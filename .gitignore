@@ -1,6 +1,8 @@
 .bundle/
 log/*.log
 pkg/
+dragonfly.log
+spec/dummy
 spec/dummy/db/*.sqlite3
 spec/dummy/log/*.log
 spec/dummy/tmp/
@@ -12,6 +14,8 @@ Gemfile.lock
 .project
 
 .rvmrc
+.ruby-gemset
+.ruby-version
 
 spec/dummy/dummy_test
 
@@ -20,4 +24,9 @@ tmp/rspec_guard_result
 spec/dummy/dummy_test
 
 tmp/rspec_guard_result
+
+# Idea/RubyMine
+*.iml
+.generators
+.rakeTasks
 

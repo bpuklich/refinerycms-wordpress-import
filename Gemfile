@@ -2,9 +2,9 @@ source "http://rubygems.org"
 
 gemspec
 
-gem 'refinerycms', '~> 2.1.0'
-gem 'refinerycms-blog', '~> 2.1.0'
-gem 'refinerycms-authentication', '~> 2.1.0'
+gem 'refinerycms', '~> 3.0.0'
+gem 'refinerycms-blog', git: 'https://github.com/refinery/refinerycms-blog', branch: 'master'
+gem 'refinerycms-authentication-devise', '~> 1.0.4'
 gem 'acts-as-taggable-on'
 gem 'globalize'
 
