@@ -24,17 +24,17 @@ describe Refinery::WordPress::Attachment, :type => :model do
 
       it "copies the attributes from the attachment" do
         expect(@image.created_at).to eq(attachment.post_date)
-        expect(@image.image.url).to end_with(attachment.file_name)
+        expect(@image.image.url).to match_url_file_name(attachment.file_name)
       end
     end
 
     describe "#replace_url" do
-      let(:post) { Refinery::Blog::Post.first }
+      let(:post) { Refinery::Blog::Post.last }
 
       before do
         test_dump.authors.each(&:to_refinery)
         test_dump.posts.each do |p|
-          p.to_refinery(true, true)  # allow_duplicates=true  Verbose=true
+          p.to_refinery(allow_duplicates: true, verbose: true)  # allow_duplicates=true  Verbose=true
         end
         @image = attachment.to_refinery
         attachment.replace_url
@@ -76,7 +76,7 @@ describe Refinery::WordPress::Attachment, :type => :model do
 
       it "copies the attributes from the attachment" do
         expect(@resource.created_at).to eq(attachment.post_date)
-        expect(@resource.file.url).to end_with(attachment.file_name)
+        expect(@resource.file.url).to match_url_file_name(attachment.file_name)
       end
 
     end

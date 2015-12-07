@@ -70,7 +70,7 @@ describe Refinery::WordPress::Post, :type => :model do
 
   describe "#to_refinery" do
     before do
-      @user = Refinery::User.create! :username => 'admin', :email => 'admin@example.com',
+      @user = Refinery::Authentication::Devise::User.create! :username => 'admin', :email => 'admin@example.com',
         :password => 'password', :password_confirmation => 'password'
     end
 
@@ -106,9 +106,13 @@ describe Refinery::WordPress::Post, :type => :model do
         Refinery::Blog::Post.create! :title => post.title, :body => 'Lorem', :author => @user, :published_at => Time.now
       end
 
+      it 'creates duplicate title record before' do
+        expect(Refinery::Blog::Post.count).to eq(1)
+      end
+
       context '(duplicate titles allowed)' do
         before do
-          @ref_post = post.to_refinery(true)
+          @ref_post = post.to_refinery(allow_duplicates: true, verbose: true)
         end
 
         it 'saves a record' do
@@ -133,7 +137,7 @@ describe Refinery::WordPress::Post, :type => :model do
       context '(duplicate titles not allowed)' do
 
         it 'raises an error' do
-          expect{post.to_refinery(false, true)}.to raise_error("Duplicate title #{post.title}. Post not imported.")
+          expect{post.to_refinery(allow_duplicates: false, verbose: true)}.to raise_error("Duplicate title #{post.title}. Post not imported.")
         end
       end
     end

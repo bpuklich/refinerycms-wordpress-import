@@ -5,6 +5,7 @@ def setup_environment
   require File.expand_path("../dummy/config/environment", __FILE__)
 
   require 'rspec/rails'
+  require 'rspec/collection_matchers'
   require 'capybara/rspec'
   require "database_cleaner"
 
@@ -26,10 +27,13 @@ def setup_environment
     config.include RSpec::Matchers
 
     config.mock_with :rspec
-    config.treat_symbols_as_metadata_keys_with_true_values = true
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
     config.include FactoryGirl::Syntax::Methods
+    config.expect_with :rspec do |c|
+      c.syntax = [:should, :expect]
+      c.include_chain_clauses_in_custom_matcher_descriptions = true
+    end
 
     config.before(:suite) do
       DatabaseCleaner.strategy = :transaction

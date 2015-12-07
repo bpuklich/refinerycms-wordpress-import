@@ -46,8 +46,8 @@ module Refinery
         end
       end
 
-      def to_refinery(allow_duplicates=false, verbose=false)
-        user = ::Refinery::User.find_by_email(creator) || ::Refinery::User.first
+      def to_refinery(allow_duplicates: false, verbose: false)
+        user = ::Refinery::Authentication::Devise::User.find_by_email(creator) || ::Refinery::Authentication::Devise::User.first
         raise "Referenced User doesn't exist! Make sure the authors are imported first."  unless user
 
         # if the title has already been taken (WP allows duplicates here, refinery doesn't) append a counter to the title
@@ -56,7 +56,7 @@ module Refinery
 
         if allow_duplicates
           counter = 0
-          while Refinery::Blog::Post.where('title=?', safe_title).exists? do
+          while Refinery::Blog::Post.where(title: safe_title).exists? do
             safe_title = "#{title}-#{counter+=1}"
           end
         else

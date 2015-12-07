@@ -168,8 +168,8 @@ describe Refinery::WordPress::Page, :type => :model do
     end
 
     it 'creates files containing the decoded image' do
-      expect(File.exist?("#{Rails.public_path}/post1000-0.png")).to be_true
-      expect(File.exist?("#{Rails.public_path}/post1000-1.png")).to be_true
+      expect(File.exist?("#{Rails.public_path}/post1000-0.png")).to be true
+      expect(File.exist?("#{Rails.public_path}/post1000-1.png")).to be true
     end
 
     after do

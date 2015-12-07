@@ -48,7 +48,7 @@ namespace :wordpress do
 
     dump.posts(only_published).each do |p|
       puts "Importing post #{p.title}"  unless silent
-      p.to_refinery(allow_duplicate_titles)
+      p.to_refinery(allow_duplicates: allow_duplicate_titles)
     end
     Refinery::WordPress.create_page_if_necessary('blog')
   end
