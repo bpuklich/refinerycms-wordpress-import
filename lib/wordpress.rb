@@ -1,6 +1,7 @@
 require 'nokogiri'
 require "wordpress/railtie"
 require 'shortcode'
+require 'acts-as-taggable-on'
 
 module Refinery
   module WordPress

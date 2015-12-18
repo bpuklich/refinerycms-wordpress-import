@@ -5,7 +5,6 @@ gemspec
 gem 'refinerycms', '~> 3.0.0'
 gem 'refinerycms-blog', git: 'https://github.com/refinery/refinerycms-blog', branch: 'master'
 gem 'refinerycms-authentication-devise', '~> 1.0.4'
-gem 'acts-as-taggable-on'
 gem 'globalize'
 
 gem 'shortcode', '0.1.2'
