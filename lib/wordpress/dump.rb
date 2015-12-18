@@ -4,7 +4,7 @@ module Refinery
       attr_reader :doc
 
       def initialize(file_name)
-        raise "No file specified to import!" if file_name.nil?
+        raise "Please specify file_name as a rake parameter (use [filename] after task_name...)" if file_name.nil?
 
         file_name = File.expand_path(file_name)
 

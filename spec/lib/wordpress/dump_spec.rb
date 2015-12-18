@@ -3,6 +3,17 @@ require 'spec_helper'
 describe Refinery::WordPress::Dump, :type => :model do
   let(:dump) { test_dump }
 
+  it 'raises error if filename not given' do
+    expect {Refinery::WordPress::Dump.new}.to raise_error(ArgumentError)
+    # expect(it).to raise_error('Please specify file_name as a rake parameter (use [filename] after task_name...)')
+  end
+
+  it 'raises error if filename does not exist' do
+    expect {Refinery::WordPress::Dump.new("some_bogus_file.xml")}.to raise_error(/no file or not readable/)
+    # expect(it).to raise_error('Please specify file_name as a rake parameter (use [filename] after task_name...)')
+  end
+
+
   it "should create a Dump object given a xml file" do
     expect(dump).to be_a Refinery::WordPress::Dump
   end
@@ -81,7 +92,7 @@ describe Refinery::WordPress::Dump, :type => :model do
 
   describe "#posts" do
     it "returns all posts" do
-      expect(dump.posts.count).to eq 3
+      expect(dump.posts.count).to eq 4
     end
 
     it 'returns a post' do
@@ -89,7 +100,7 @@ describe Refinery::WordPress::Dump, :type => :model do
     end
 
     it "returns only published posts with only_published=true" do
-      expect(dump.posts(true).count).to eq(2)
+      expect(dump.posts(true).count).to eq(3)
     end
   end
 

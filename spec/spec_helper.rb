@@ -8,6 +8,7 @@ def setup_environment
   require 'rspec/collection_matchers'
   require 'capybara/rspec'
   require "database_cleaner"
+  require 'fantaskspec'
 
   #ActionMailer::Base.delivery_method = :test
   #ActionMailer::Base.perform_deliveries = true
@@ -30,6 +31,8 @@ def setup_environment
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
     config.include FactoryGirl::Syntax::Methods
+    config.infer_rake_task_specs_from_file_location!
+    # config.raise_errors_for_deprecations!
     config.expect_with :rspec do |c|
       c.syntax = [:should, :expect]
       c.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -49,7 +52,9 @@ def setup_environment
     # end
 
   end
+  Rails.application.load_tasks
 end
+
 
 def each_run
   Rails.cache.clear
@@ -65,7 +70,7 @@ def each_run
   end
 
   # It isn't really a engine, per se.
-  puts Rails.root.join("../support/**/*.rb")
+  # puts Rails.root.join("../support/**/*.rb")
   Dir[Rails.root.join("../support/**/*.rb")].each {|f| require f}
 
 end
