@@ -24,7 +24,7 @@ module Refinery
       end
 
       def to_refinery
-        user = Refinery::Authentication::Devise::User.find_or_initialize_by(username: login, email: email)
+        user = Refinery::Blog.user_class.find_or_initialize_by(username: login, email: email)
         if user.new_record?
           user.add_role(:refinery)
           user.password = user.password_confirmation = 'password'

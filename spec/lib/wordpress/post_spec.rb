@@ -70,7 +70,7 @@ describe Refinery::WordPress::Post, :type => :model do
 
   describe "#to_refinery" do
     before do
-      @user = Refinery::Authentication::Devise::User.create! :username => 'admin', :email => 'admin@example.com',
+      @user = Refinery::Blog.user_class.create! :username => 'admin', :email => 'admin@example.com',
         :password => 'password', :password_confirmation => 'password'
     end
 
