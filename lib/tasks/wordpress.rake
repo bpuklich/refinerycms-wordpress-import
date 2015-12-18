@@ -9,13 +9,11 @@ namespace :wordpress do
 # ------------------------------------- Begin blog processing tasks --------------------------------------------------
  desc 'Reset the blog tables for a clean import'
   task :reset_blog => :environment do
-    # init
     clear_tables(BLOG_TABLES)
   end
 
   desc "Import categories from a Refinery::WordPress XML dump"
   task :import_categories, [:file_name] => [:environment] do |task, params|
-    # init
     dump = Refinery::WordPress::Dump.new(params.file_name)
     puts_unless_silent "Importing #{dump.categories.count} categories ..."
     dump.categories.each(&:to_refinery)
@@ -23,7 +21,6 @@ namespace :wordpress do
 
   desc "Import tags from a Refinery::WordPress XML dump"
   task :import_tags, [:file_name] => [:environment] do |task, params|
-    # init
     dump = Refinery::WordPress::Dump.new(params.file_name)
     puts_unless_silent "Importing #{dump.tags.count} tags ..."
     dump.tags.each(&:to_refinery)
@@ -31,7 +28,6 @@ namespace :wordpress do
 
   desc "Import blog data from a Refinery::WordPress XML dump"
   task :import_blog, [:file_name] => [:environment] do |task, params|
-    # init
     dump = Refinery::WordPress::Dump.new(params.file_name)
 
     puts_unless_silent "Importing #{dump.authors.count} authors ..."
@@ -59,14 +55,12 @@ namespace :wordpress do
 
   desc 'Reset the CMS relevant tables for a clean import'
   task :reset_pages, [:id_offset] => [:environment] do |task, params|
-    # Rake::Task['environment'].invoke
     params.with_defaults :id_offset => 0
     clear_tables(CMS_TABLES, params.id_offset.to_i)
   end
 
   desc 'Import CMS data from a WordPress XML dump'
   task :import_pages, [:file_name, :id_offset, :page_parent] => [:environment] do |task, params|
-    # init
     dump = Refinery::WordPress::Dump.new(params.file_name)
     params.with_defaults :id_offset => 0
     params.with_defaults :page_parent => 'blog'
@@ -104,23 +98,26 @@ namespace :wordpress do
 
   desc 'Reset the media tables for a clean import'
   task :reset_media, [:id_offset] => [:environment] do |task, params|
-    # Rake::Task['environment'].invoke
     params.with_defaults :id_offset => 0
     clear_tables(MEDIA_TABLES, params.id_offset.to_i)
   end
 
   desc 'Import media data (images and files) from a WordPress XML dump and replace target URLs in pages and posts'
   task :import_media, [:file_name] => [:environment] do |task, params|
-    # init
     dump = Refinery::WordPress::Dump.new(params.file_name)
 
     puts_unless_silent 'Importing images and resources'
-    attachments = dump.attachments.each(&:to_refinery)
+    # attachments = dump.attachments.each(&:to_refinery)
+    dump.attachments.each do |attachment|
+      puts_unless_silent "Importing #{attachment.url}"
+      attachment.to_refinery
+    end
 
     # parse all created BlogPost and Page bodys and replace the old wordpress media urls
     # with the newly created ones
     puts_unless_silent 'Linking images and resources to posts and pages'
-    attachments.each do |attachment|
+    dump.attachments.each do |attachment|
+      puts_unless_silent "Linking #{attachment.url}"
       attachment.replace_url
     end
   end
