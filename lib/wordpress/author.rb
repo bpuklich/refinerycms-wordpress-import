@@ -27,7 +27,7 @@ module Refinery
         user = Refinery::Blog.user_class.find_or_initialize_by(username: login, email: email)
         if user.new_record?
           user.add_role(:refinery)
-          user.password = user.password_confirmation = 'password'
+          user.password = user.password_confirmation = SecureRandom.base64(8)
           user.save!
         end
         user
