@@ -14,7 +14,7 @@ def setup_environment
   #ActionMailer::Base.perform_deliveries = true
   #ActionMailer::Base.default_url_options[:host] = "test.com"
 
-  require "custom_matchers.rb"
+  Dir[Rails.root.join("../../spec/support/**/*.rb")].each {|f| require f}
 
   Rails.backtrace_cleaner.remove_silencers!
 
