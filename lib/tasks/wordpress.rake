@@ -108,7 +108,7 @@ namespace :wordpress do
 
     puts_unless_silent 'Importing images and resources'
     # attachments = dump.attachments.each(&:to_refinery)
-    dump.attachments.each do |attachment|
+    attachments = dump.attachments.each do |attachment|
       puts_unless_silent "Importing #{attachment.url}"
       attachment.to_refinery
     end
@@ -116,7 +116,7 @@ namespace :wordpress do
     # parse all created BlogPost and Page bodys and replace the old wordpress media urls
     # with the newly created ones
     puts_unless_silent 'Linking images and resources to posts and pages'
-    dump.attachments.each do |attachment|
+    attachments.each do |attachment|
       puts_unless_silent "Linking #{attachment.url}"
       attachment.replace_url
     end
