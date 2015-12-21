@@ -10,11 +10,11 @@ module Refinery
       end
 
       def title
-        node.xpath("title").text
+        HTMLEntities.new.decode(node.xpath("title").text)
       end
 
       def description
-        node.xpath("description").text
+        HTMLEntities.new.decode(node.xpath("description").text)
       end
 
       def file_name

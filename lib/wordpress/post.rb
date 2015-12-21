@@ -10,7 +10,7 @@ module Refinery
         end
 
         node.xpath(path).collect do |tag_node|
-          Tag.new(tag_node.text.strip)
+          Tag.new(HTMLEntities.new.decode(tag_node.text.strip))
         end
       end
 
@@ -20,7 +20,7 @@ module Refinery
 
       def categories
         node.xpath("category[@domain='category']").collect do |cat|
-          Category.new(cat.text.strip)
+          Category.new(HTMLEntities.new.decode(cat.text.strip))
         end
       end
 

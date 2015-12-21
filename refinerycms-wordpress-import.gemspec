@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'acts-as-taggable-on'
   s.add_dependency 'nokogiri', '~> 1.6.0'
   s.add_dependency 'shortcode'
+  s.add_dependency 'htmlentities'
 
   # Development dependencies (usually used for testing)
   s.add_development_dependency 'refinerycms-testing', '~> 3.0.0'

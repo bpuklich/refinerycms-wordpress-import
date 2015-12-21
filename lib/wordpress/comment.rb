@@ -24,7 +24,7 @@ module Refinery
       end
 
       def content
-        node.xpath('wp:comment_content').text
+        HTMLEntities.new.decode(node.xpath('wp:comment_content').text)
       end
 
       def approved?

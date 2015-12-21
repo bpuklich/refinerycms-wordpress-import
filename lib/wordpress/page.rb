@@ -33,7 +33,7 @@ module Refinery
       end
 
       def title
-        node.xpath("title").text.presence || 'Title'
+        HTMLEntities.new.decode(node.xpath("title").text.presence || 'Title')
       end
 
       def content
