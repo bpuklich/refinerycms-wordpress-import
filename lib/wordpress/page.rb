@@ -64,6 +64,10 @@ module Refinery
         node.xpath("wp:post_id").text.to_i
       end
 
+      def post_name
+        node.xpath("wp:post_name").text
+      end
+
       def parent_id
         dump_id = node.xpath("wp:post_parent").text.to_i
         dump_id == 0 ? nil : dump_id
@@ -90,8 +94,9 @@ module Refinery
          {:id => post_id + id_offset,
           :title => title,
           :created_at => post_date,
-          :draft => draft?
-         })
+          :draft => draft?,
+          :custom_url => post_name
+        })
 
         page.parts.create(:title => 'Body', :body => content_formatted)
         page

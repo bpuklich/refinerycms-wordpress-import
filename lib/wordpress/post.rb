@@ -69,7 +69,8 @@ module Refinery
         begin
           post = ::Refinery::Blog::Post.new :title => safe_title, :body => content_formatted,
             :draft => draft?, :published_at => post_date,
-            :user_id => user.id, :tag_list => tag_list, :meta_description => meta_description
+            :user_id => user.id, :tag_list => tag_list, :meta_description => meta_description,
+            :custom_url => post_name
           post.created_at = post_date
           post.save!
 
