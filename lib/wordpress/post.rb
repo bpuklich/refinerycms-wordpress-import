@@ -47,7 +47,9 @@ module Refinery
       end
 
       def to_refinery(allow_duplicates: false, verbose: false)
-        user = Refinery::Blog.user_class.find_by_email(creator) || Refinery::Blog.user_class.first
+        user = Refinery::Blog.user_class.find_by_login(creator)
+        user ||= Refinery::Blog.user_class.find_by_email(creator)
+        user ||= Refinery::Blog.user_class.first
         raise "Referenced User doesn't exist! Make sure the authors are imported first."  unless user
 
         # if the title has already been taken (WP allows duplicates here, refinery doesn't) append a counter to the title
